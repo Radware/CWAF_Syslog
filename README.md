@@ -89,8 +89,7 @@ pip install -r requirements.txt
 
 1. Place the script folder into the appropriate location on the server
 2. Install dependencies and necessary libraries/packages
-3. Rename configuration file `config.py example` to ‘config.py’
-4. You don't need to run it periodically, as with interval parameter it will automatically be done
-5. Navigate to the folder containing the script and run 
+3. You don't need to run it periodically, as with interval parameter it will automatically be done
+4. Navigate to the folder containing the script and run 
 python3 CWAF_API_Syslog.py --waf --user your_user@domain.com --password Password123! --interval 60000 --server 1.2.3.4 --port 5678 --transport tcp
 
