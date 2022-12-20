@@ -1,6 +1,6 @@
 # encoding = utf-8
 
-version = 4.2.1
+version = "4.2.1"
 
 import sys
 import time
