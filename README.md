@@ -78,10 +78,10 @@ argparse
 
 Packages in use – may require installation 
 
-psutil>=5.8.0
-tls-syslog>=0.2.0
+psutil
+tls-syslog
 
-Use the following command in order to install urllib3
+Use the following command in order to install them
 
 pip install -r requirements.txt
 
