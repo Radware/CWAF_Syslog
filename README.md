@@ -36,11 +36,11 @@ Depending on the event type, some keys may exist or not.
 
 # Components for the script operation
 
-## “CWAF_API_Syslog_endless.py”
+## “CWAF_API_Syslog.py”
 
-“CWAF_API_Syslog_endless.py” is the only python file containing all the required functions. Below is the list of the variables that you need to pass as parameters : 
+“CWAF_API_Syslog.py” is the only python file containing all the required functions. Below is the list of the variables that you need to pass as parameters : 
 
-	--user 		: Your Cloud WAAP API user
+    --user	: Your Cloud WAAP API user
     --password 	: Your Cloud WAAP API password
     --interval 	: Interval between logs collection
     --server	: IP address of your syslog server
@@ -54,7 +54,7 @@ Depending on the event type, some keys may exist or not.
     --bots		: Flag to collect bots events
     --activity	: Flag to collect user activity logs
 
---security --bots --activity --user <user> --password <password> --interval <interval_second> --server <syslog_server> --port <syslog_port> --transport <tcp/udp> [--cert <SSL_certificate>] [--ssl] [--proxyAddress <proxy-address> -proxyPort <proxy-port>]
+Execution command should look like : python CWAF_API_Syslog.py --security --bots --activity --user <user> --password <password> --interval <interval_second> --server <syslog_server> --port <syslog_port> --transport <tcp/udp> [--cert <SSL_certificate>] [--ssl] [--proxyAddress <proxy-address> -proxyPort <proxy-port>]
 
 # Setup
 
