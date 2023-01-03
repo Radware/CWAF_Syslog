@@ -3,7 +3,10 @@ This tool collects and sends security, bots and user events to an external syslo
 
 # ChangeLog
 
-v4.2 
+v4.3.1
+- Collects DDoS events with --ddos argument
+
+v4.2.1
 - Added running the code with argument
 		
 - Added optional parameters
