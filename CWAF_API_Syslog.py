@@ -1,6 +1,6 @@
 # encoding = utf-8
 
-version = "4.2.1"
+version = "4.3.1"
 
 import sys
 import time
@@ -34,7 +34,7 @@ def getTenantID(credentials,proxy):
         data = json.loads(response.read().decode("utf8"))
         if response.status != 200:
             logging.error("Failed TenantID with response => %d : %s", res.status, res.reason)
-            logOut(credentials,proxy)
+            LogOut(credentials,proxy)
             sys.exit(2)
         else:
             return data["tenantEntityId"]
@@ -67,7 +67,7 @@ def getApplicationIDs(credentials,proxy):
 
         if response.status != 200:
             print("Failed collecting application IDs => %d : %s", res.status, res.reason)
-            logOut(credentials,proxy)
+            LogOut(credentials,proxy)
             exit(2)
         else:
             data = json.loads(response.read().decode("utf8"))
@@ -151,7 +151,7 @@ def getAuthorizationToken(credentials,proxy):
         return 0
 
 
-def logOut(credentials,proxy):
+def LogOut(credentials,proxy):
     if (proxy['use_proxy']):
         conn = http.client.HTTPSConnection(proxy['address'], proxy['port'])
         conn.set_tunnel("radware-public.okta.com", port=443)
@@ -204,7 +204,7 @@ def getUserActivity(credentials, timelower, timeupper,proxy):
         return data
     else:
         print(data['message'])
-        logOut(credentials,proxy)
+        LogOut(credentials,proxy)
         sys.exit(2)
 
 
@@ -294,7 +294,7 @@ def getBotEvents(credentials, timelower, timeupper, applicationID,page,proxy):
             return data["results"]
         else:
             print(data['message'])
-            logOut(credentials,proxy)
+            LogOut(credentials,proxy)
             sys.exit(2)
 
     except Exception as e:
@@ -682,17 +682,12 @@ def main(argv):
         parser.add_argument("--proxyPort",  help="Port of outgoing proxy")
         parser.add_argument("--waf", action='store_true' ,help="Flag to collect waf security events")
         parser.add_argument("--bots", action='store_true', help="Flag to collect bots events")
+        parser.add_argument("--ddos", action='store_true', help="Flag to collect DDoS events")
         parser.add_argument("--activity", action='store_true', help="Flag to collect user activity logs")
 
         args = parser.parse_args()
 
-        #opts = getopt.getopt(argv, "hWBAu::p::i::s::l::t::c::S::pa::pp",
-#                             ["user=", "password=", "interval=", "server=", "port=", "transport=","proxy-address=","proxy-port="])
     except SystemError as e:
-        print(
-            'Please call this script as follows :\n%s --security --bots --activity -u <user> -p <password> -i <interval_second> -s '
-                '<syslog_server> -l <syslog_port> -t <tcp/udp> [-c <SSL_certificate>] [--SSL] [-pa <proxy-address> -pp <proxy-port>]' %
-            sys.argv[0])
         print ("An error occured : %s",e)
         sys.exit(2)
 
@@ -811,7 +806,7 @@ def main(argv):
 
         except KeyboardInterrupt:
             print("Bye. Thanks for using Cloud WAF.")
-            logOut(credentials,proxy)
+            LogOut(credentials,proxy)
             sys.exit()
 
 
