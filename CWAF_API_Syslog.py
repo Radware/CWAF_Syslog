@@ -249,6 +249,47 @@ def getSecurityEvents(credentials, timelower, timeupper,proxy,page,more_pages):
         exit(2)
 
 
+def getDDoSEvents(credentials, timelower, timeupper, proxy, page, more_pages):
+    if (proxy['use_proxy']):
+        conn = http.client.HTTPSConnection(proxy['proxy_ip'], proxy['proxy_port'])
+        conn.set_tunnel("portal-ng.radwarecloud.com", port=443)
+    else:
+        conn = http.client.HTTPSConnection("portal-ng.radwarecloud.com")
+
+    payload = '''{"criteria":
+                    [{"type":"timeFilter","field":"receivedTimeStamp","includeLower":true,"includeUpper":true,
+                        "upper":''' + timeupper + ''',
+                        "lower":''' + timelower + '''}],
+                    "pagination":{"page":''' + str(page) + ''',"size":100},
+                    "order":[{"type":"Order","order":"DESC","field":"receivedTimeStamp","sortingType":"STRING"}]}'''
+
+    headers = {
+        "Authorization": "Bearer %s" % credentials["Bearer"],
+        'requestEntityids': credentials["TenantID"],
+        "Cookie": "Authorization=%s" % credentials["Bearer"],
+        'Content-Length': len(payload),
+        'Content-Type': 'application/json;charset=UTF-8'
+    }
+    try:
+        conn.request("POST", "/mgmt/monitor/reporter/reports-ext/SYSTEM_ATTACK", payload, headers=headers)
+        res = conn.getresponse()
+        if res.status == 200:
+            appdata = json.loads(res.read())
+            if int(appdata['metaData']['totalHits']) <= ((page + 1) * 100):
+                more_pages = True
+            else:
+                more_pages = False
+
+            return appdata['data']
+        else:
+            logging.error("Failed getDDoSEvents with response => %d : %s", res.status, res.reason)
+            LogOut(credentials)
+            exit(2)
+    except Exception as e:
+        logging.error("Error occurred on getting DDoS events from Cloud AppSec portal-ng. %s", e)
+        exit(2)
+
+
 def getBotEvents(credentials, timelower, timeupper, applicationID,page,proxy):
     app_id=""
     data={}
@@ -785,6 +826,17 @@ def main(argv):
                     bulk_events=getSecurityEvents(credentials,str(past),str(now),proxy,page,more_pages)
                     if bulk_events :
                         format_security_event(bulk_events, logger, args.transport)
+            bulk_events.clear()
+            if args.ddos == True:
+                page = 0
+                bulk_events = getDDoSEvents(credentials, str(past), str(now), proxy, page, more_pages)
+                format_ddos_event(bulk_events, logger, args.transport)
+                while (more_pages == True):
+                    bulk_events.clear()
+                    page += 1
+                    bulk_events = getDDoSEvents(credentials, str(past), str(now), proxy, page, more_pages)
+                    if bulk_events:
+                        format_ddos_event(bulk_events, logger, args.transport)
             bulk_events.clear()
             if args.bots == True :
                 applicationIDs = getApplicationIDs(credentials,proxy)
